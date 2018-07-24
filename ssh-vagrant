@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#
+# WSL用
+# Windows版 vagrant.exe を使用してSSH設定を取得し
+# WSLの ssh を使用してログインする
+#
+
+SSH_VAGRANT=`vagrant.exe ssh-config |awk '{sub(/[\r\n]+$/, "", $2); a[$1]=$2} END {pKey=a["IdentityFile"]; print a["User"]"@"a["HostName"] " -p " a["Port"] " -i " substr(pKey, index(pKey, ".vagrant"), length(pKey))}'`
+
+echo $SSH_VAGRANT
+
+eval ssh $SSH_VAGRANT
+
