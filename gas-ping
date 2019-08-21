@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# 現在のIPアドレスを取得して Google Spread Sheet に設置された API に送る
+#
+
+IP=/bin/ip
+CURL=/usr/bin/curl
+
+if [ -z "$GAS_PING_URL" ]; then
+    echo "usage: GAS_PING_URL=google_apps_script_url gas_ping"
+    exit 1
+fi
+ADDR=`$IP -f inet -o addr show eno1 |awk '($2=="eno1"){print $4}' |cut -d/ -f 1`
+$CURL -L $GAS_PING_URL?ip=$ADDR
