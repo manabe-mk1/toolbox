@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# rsync を自分で使いやすいように簡略化したコマンド
+# 指定したリモートパスにあるカレントディレクトリの同名ディレクトリから取得する
+#
+
+IGNORE_LIST=rsync-ignore
+DRY_RUN=true
+VARBOSE=false
+
+while getopts xe:v OPTION ; do
+    case $OPTION in
+        x) DRY_RUN=false ;;
+        e) IGNORE_LIST=$OPTARG ;;
+        v) VARBOSE=true ;;
+        ?) exit 1 ;;
+    esac
+done
+shift $(($OPTIND -1))
+
+REMOTE_PATH=$1
+if [ -z $REMOTE_PATH ] ; then
+    echo usage: `basename $0` [-x] [OTHER_OPTION...] "remote_path(has same name directory as pwd)"
+    exit 1
+fi
+
+SOURCE=${REMOTE_PATH%/}/`basename $PWD`/
+echo src: $SOURCE
+echo dst: $PWD/
+
+DRY_RUN_OPTION=''
+if $DRY_RUN ; then
+    DRY_RUN_OPTION='-n'
+fi
+
+EXCLUDE_OPTION=''
+if [ -f $IGNORE_LIST ] ; then
+    if $VARBOSE ; then
+        echo "===== ignore files ($IGNORE_LIST)"
+        cat $IGNORE_LIST
+        echo ==========
+    fi
+    EXCLUDE_OPTION="--exclude-from $IGNORE_LIST" 
+fi
+
+START_TIME=`date +%s`
+echo ''
+rsync --delete -avz $DRY_RUN_OPTION $EXCLUDE_OPTION $SOURCE ./ |grep -vE '/$'
+echo $((`date +%s` - $START_TIME)) sec
+
+if $DRY_RUN ; then
+    echo 'use -x option, if you want execute.' 
+fi
