@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# rsync を自分で使いやすいように簡略化したコマンド
+#
+
+DRY_RUN=true
+DOWNLOAD_MODE=false
+WITH_VENDOR=false
+CHECKSUM=false
+
+while getopts xcdv OPTION ; do
+    case $OPTION in
+        x) DRY_RUN=false ;;
+        c) CHECKSUM=true ;;
+        d) DOWNLOAD_MODE=true ;;
+        v) WITH_VENDOR=true ;;
+        ?) exit 1 ;;
+    esac
+done
+shift $(($OPTIND -1))
+
+REMOTE_PATH=$1
+if [ -z $REMOTE_PATH ] ; then
+    echo usage: `basename $0` [-x] [OTHER_OPTION...] "remote_path(has same name directory as pwd)"
+    exit 1
+fi
+
+REMOTE=${REMOTE_PATH%/}/`basename $PWD`/
+SOURCE=./
+DEST=$REMOTE
+if $DOWNLOAD_MODE ; then
+    echo Download mode
+    SOURCE=$REMOTE
+    DEST=./
+fi
+
+echo remote: $REMOTE
+
+DRY_RUN_OPTION=''  ; if $DRY_RUN  ; then DRY_RUN_OPTION='-n' ; fi
+CHECKSUM_OPTION='' ; if $CHECKSUM ; then CHECKSUM_OPTION='--checksum' ; fi
+EXCLUDE_VENDOR='--exclude vendor' ; if $WITH_VENDOR ; then EXCLUDE_VENDOR='' ; fi
+
+START_TIME=`date +%s`
+
+rsync --delete -azvh $DRY_RUN_OPTION $CHECKSUM_OPTION \
+    --exclude .git \
+    --exclude .idea \
+    $EXCLUDE_VENDOR \
+    --exclude node_modules \
+    --exclude bootstrap/cache \
+    --exclude storage/debugbar \
+    --exclude storage/framework/cache \
+    --exclude storage/framework/sessions \
+    --exclude storage/framework/views \
+    --exclude *.log \
+    --exclude .nuxt/ \
+    --exclude __pycache__/ \
+    --exclude cdk.out/ \
+    --exclude chalice.out/ \
+    --exclude .pytest_cache/ \
+    --exclude *.pyc \
+    $SOURCE $DEST |grep -vE '/$'
+
+echo $((`date +%s` - $START_TIME)) sec
+
+if $DRY_RUN ; then
+    echo 'use -x option, if you want execute.'
+fi
