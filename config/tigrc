@@ -1,0 +1,6 @@
+bind main B !git rebase -i %(commit)
+bind diff B !git rebase -i %(commit)
+bind main D !git diff %(commit)
+bind main F !git diff --name-only %(commit)
+bind main K !git checkout %(commit)
+bind refs K !git checkout %(branch)
