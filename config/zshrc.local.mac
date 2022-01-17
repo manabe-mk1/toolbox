@@ -1,0 +1,4 @@
+bindkey "^[[A" history-beginning-search-backward-end
+bindkey "^[[B" history-beginning-search-forward-end
+
+export PATH=$PATH:~/work/toolbox:$HOME/.nodebrew/current/bin
