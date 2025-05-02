@@ -1,0 +1,19 @@
+[user]
+	name = Manabe Ken-ichi
+[core]
+	editor = vi
+	quotepath = false
+	filemode = false
+	autocrlf = false
+	excludesFile = ~/.gitignore
+[merge]
+	defaultToUpstream = true
+[push]
+	default = simple
+[diff]
+	indentHeuristic = true
+[alias]
+	ck = checkout
+	pwd = rev-parse --abbrev-ref HEAD
+	pick = cherry-pick
+	history = log --reverse --pretty=format:'[%ai] %h %an %s' -n
