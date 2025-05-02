@@ -53,3 +53,7 @@ alias li="ls -F"
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 source single-ssh-agent
+if ssh-add -l |grep -q $(awk '{print $3}' ~/.ssh/id_rsa.pub)
+    then :
+    else ssh-add
+fi
