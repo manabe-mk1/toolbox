@@ -52,4 +52,8 @@ alias li="ls -F"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-source single-ssh-agent
+#source single-ssh-agent
+if ssh-add -l |grep -q $(cat ~/.ssh/id_rsa.pub | sed -e 's/^.*== //')
+    then :
+    else ssh-add
+fi
