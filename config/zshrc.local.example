@@ -1,1 +1,4 @@
-export PATH=$PATH:~/work/toolbox
+bindkey "^[OA" history-beginning-search-backward-end
+bindkey "^[OB" history-beginning-search-forward-end
+
+[ -d ~/toolbox ] && export PATH=$PATH:~/toolbox
