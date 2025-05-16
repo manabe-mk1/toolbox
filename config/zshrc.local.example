@@ -1,4 +1,11 @@
+precmd() {
+    # ウィンドウタイトル上書き
+    echo -en "\e]2;$(echo $PWD |sed -e "s|$HOME/||")\a"
+}
+
 bindkey "^[OA" history-beginning-search-backward-end
 bindkey "^[OB" history-beginning-search-forward-end
 
-[ -d ~/toolbox ] && export PATH=$PATH:~/toolbox
+[ -d $HOME/bin ] && export PATH=$PATH:~/bin
+[ -d $HOME/toolbox ] && export PATH=$PATH:$HOME/toolbox
+[ -d $HOME/.nodebrew/current/bin ] && export PATH=$PATH:$HOME/.nodebrew/current/bin
