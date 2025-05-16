@@ -1,3 +1,8 @@
+precmd() {
+    # ウィンドウタイトル上書き
+    echo -en "\e]2;$(echo $PWD |sed -e "s|$HOME/||")\a"
+}
+
 bindkey "^[OA" history-beginning-search-backward-end
 bindkey "^[OB" history-beginning-search-forward-end
 
